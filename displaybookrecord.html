@@ -22,7 +22,7 @@
         const bookDetails = document.getElementById("bookDetails");
         const status = document.getElementById("status");
 
-        fetch("https://raw.githubusercontent.com/rez-h61/webdevlab6/refs/heads/main/books.json?token=GHSAT0AAAAAAENGTLTXYYFBWFJFNKZWPIHO2XBJLNA")
+        fetch("https://raw.githubusercontent.com/rez-h61/webdevlab6/refs/heads/main/books.json")
             .then(response => {
                 if (!response.ok) {
                     throw new Error("Unable to load JSON.");
