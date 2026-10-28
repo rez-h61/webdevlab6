@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Records</title>
+</head>
+<body>
+    <h1>Book Records</h1>
+
+    <label for="bookSelect">Choose a book:</label>
+    <select id="bookSelect" disabled>
+        <option value="">-- Select a book --</option>
+    </select>
+
+    <div id="bookDetails"></div>
+    <p id="status">Loading books...</p>
+
+    <script>
+        let books = [];
+
+        const bookSelect = document.getElementById("bookSelect");
+        const bookDetails = document.getElementById("bookDetails");
+        const status = document.getElementById("status");
+
+        fetch("https://raw.githubusercontent.com/rez-h61/webdevlab6/refs/heads/main/books.json?token=GHSAT0AAAAAAENGTLTXYYFBWFJFNKZWPIHO2XBJLNA")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Unable to load JSON.");
+                }
+                return response.json();
+            })
+            .then(data => {
+                books = data.Books;
+
+                books.forEach(book => {
+                    const option = document.createElement("option");
+                    option.value = book.title;
+                    option.textContent = book.title;
+                    bookSelect.appendChild(option);
+                });
+
+                bookSelect.disabled = false;
+                status.textContent = "";
+            })
+            .catch(error => {
+                status.textContent = "Failed to load book data.";
+                console.error(error);
+            });
+
+        bookSelect.addEventListener("change", () => {
+            bookDetails.textContent = "";
+
+            if (bookSelect.value === "") {
+                return;
+            }
+
+            const selectedBook = books.find(book => {
+                return book.title === bookSelect.value;
+            });
+
+            if (!selectedBook) {
+                bookDetails.textContent = "Book not found.";
+                return;
+            }
+
+            const details = [
+                ["Title", selectedBook.title],
+                ["Author", selectedBook.author],
+                ["Publication year", selectedBook.publicationYear],
+                ["Genres", selectedBook.genres.join(", ")]
+            ];
+
+            details.forEach(([label, value]) => {
+                const paragraph = document.createElement("p");
+                paragraph.textContent = `${label}: ${value}`;
+                bookDetails.appendChild(paragraph);
+            });
+        });
+    </script>
+</body>
+</html>
